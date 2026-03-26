@@ -155,7 +155,7 @@ export default function EHRTerminal() {
     const fetchRealBalance = async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/v1/patient/${patientId}`,
+          `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}`,
         );
         if (res.ok) {
           const data = await res.json();
@@ -175,7 +175,7 @@ export default function EHRTerminal() {
     setIsMounted(true);
     const fetchQueue = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/v1/ehr/queue");
+        const res = await fetch("https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/queue");
         if (res.ok) {
           const data = await res.json();
           setReviewQueue(data);
@@ -193,7 +193,7 @@ export default function EHRTerminal() {
   // 🌟 DB PUSH: Sync specific claim to DB
   const syncClaimToDB = async (claim: QueuedClaim) => {
     try {
-      await fetch("http://127.0.0.1:8000/api/v1/ehr/queue", {
+      await fetch("https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(claim),
@@ -203,7 +203,7 @@ export default function EHRTerminal() {
 
   const deleteClaimFromDB = async (id: string) => {
     try {
-      await fetch(`http://127.0.0.1:8000/api/v1/ehr/queue/${id}`, { method: "DELETE" });
+      await fetch(`https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/queue/${id}`, { method: "DELETE" });
     } catch (e) { console.error("Delete error", e); }
   };
 
@@ -232,7 +232,7 @@ export default function EHRTerminal() {
     clinicalIndication: string = "", 
   ) => {
     try {
-      await fetch("http://127.0.0.1:8000/api/v1/ehr/audit-log", {
+      await fetch("https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/audit-log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -254,7 +254,7 @@ export default function EHRTerminal() {
   };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/v1/clinical/dictionary")
+    fetch("https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/clinical/dictionary")
       .then((res) => res.json())
       .then((data) => {
         setTestList(data);
@@ -281,7 +281,7 @@ export default function EHRTerminal() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/v1/ehr/order-procedure",
+        "https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/order-procedure",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -355,7 +355,7 @@ export default function EHRTerminal() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/v1/ehr/order-procedure",
+        "https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/ehr/order-procedure",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
