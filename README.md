@@ -1,4 +1,3 @@
-```markdown
 # 🏥 MediClaim: AI-Powered Risk-Adjusted Financial Settlement Engine
 
 [![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon_Ready-success)](#)
@@ -115,4 +114,3 @@ We built this platform from the ground up during this hackathon, iterating throu
 
 ---
 *Built with ❤️ for the future of African Healthcare.*
-```
