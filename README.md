@@ -1,3 +1,12 @@
+---
+title: MediClaim AI
+emoji: 🏥
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # 🏥 MediClaim: AI-Powered Risk-Adjusted Financial Settlement Engine
 
 [![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon_Ready-success)](#)
