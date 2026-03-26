@@ -1,0 +1,9 @@
+# IDE Settings (crucial for protecting settings.json)
+.vscode/
+
+# OS-level junk (standard cleanup for Mac/Windows teams)
+.DS_Store
+Thumbs.db
+
+# Global dependency catch (in case npm is accidentally run in root)
+node_modules/

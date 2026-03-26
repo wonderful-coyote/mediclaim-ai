@@ -1,0 +1,50 @@
+[
+  {
+    "id": "PROC-001",
+    "name": "Appendectomy",
+    "dept": "Surgery",
+    "cost": 250000,
+    "copay": 50000,
+    "category": "Procedure"
+  },
+  {
+    "id": "RAD-205",
+    "name": "TIPS (Interventional Radiology)",
+    "dept": "Radiology",
+    "cost": 850000,
+    "copay": 170000,
+    "category": "Procedure"
+  },
+  {
+    "id": "LAB-102",
+    "name": "Malaria Parasite (MP) Test",
+    "dept": "Laboratory",
+    "cost": 5000,
+    "copay": 1000,
+    "category": "Investigation"
+  },
+  {
+    "id": "LAB-103",
+    "name": "Fasting Blood Sugar (FBS)",
+    "dept": "Laboratory",
+    "cost": 3500,
+    "copay": 700,
+    "category": "Investigation"
+  },
+  {
+    "id": "RAD-201",
+    "name": "Abdominal Ultrasound",
+    "dept": "Radiology",
+    "cost": 15000,
+    "copay": 3000,
+    "category": "Investigation"
+  },
+  {
+    "id": "LAB-104",
+    "name": "Full Blood Count (FBC)",
+    "dept": "Laboratory",
+    "cost": 6000,
+    "copay": 1200,
+    "category": "Investigation"
+  }
+]

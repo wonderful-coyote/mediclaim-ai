@@ -1,0 +1,22 @@
+# Security / Environment Variables
+.env
+.env.local
+
+# Database (NEVER push your live database to GitHub)
+*.db
+*.sqlite3
+mediclaim_enterprise.db
+
+# Python Virtual Environments
+venv/
+env/
+.venv/
+
+# Python Cache & Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# AI / Machine Learning caches
+.huggingface/
