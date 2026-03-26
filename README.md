@@ -9,7 +9,7 @@ pinned: false
 
 # 🏥 MediClaim: AI-Powered Risk-Adjusted Financial Settlement Engine
 
-[![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon_Ready-success)](#)
+[![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon_Ready-success)](https://mediclaim-ai-steel.vercel.app/)
 [![Interswitch API](https://img.shields.io/badge/Integration-Interswitch_API-blue)](https://developer.interswitchng.com/)
 [![Gemini 2.0](https://img.shields.io/badge/Cloud_AI-Gemini_2.0_Flash-purple)](https://ai.google.dev/)
 [![PubMedBERT](https://img.shields.io/badge/Offline_NLP-PubMedBERT-orange)](https://huggingface.co/pritamdeka/PubMedBERT-MNLI-MedNLI)
@@ -66,58 +66,58 @@ Upon successful authorization, the system generates a comprehensive financial br
 ---
 
 ## 🛠️ Tech Stack
-* **Frontend:** Next.js, React, Tailwind CSS (Modern, responsive, real-time polling UI).
-* **Backend:** FastAPI (Python), SQLite (Persistent Audit Ledger & Clinical Queue).
+* **Frontend:** Next.js, React, Tailwind CSS (Deployed on Vercel).
+* **Backend:** FastAPI, Python, Docker, SQLite (Deployed on Hugging Face Spaces).
 * **AI & NLP:** Google Gemini 2.0 Flash, PubMedBERT (HuggingFace Transformers).
 * **Payments:** Interswitch API Integration.
 
 ---
 
-## 💻 Running Locally (For Judges)
+## 💻 Live Links & Running Locally (For Judges)
 
+### 🌐 Live Demo Access
+You can interact with the live production environment right now:
+* **Doctor Terminal:** [[Link Here](https://mediclaim-ai-steel.vercel.app/)]
+* **Patient Wallet:** [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
+* **Backend API Docs:** [[Link Here](https://wonderfulcoyote-mediclaim-ai.hf.space/docs)]
+
+### ⚙️ Run the Source Code Locally
 **1. Clone the repository**
-```bash
-git clone [https://github.com/wonderful-coyote/mediclaim-ai.git](https://github.com/wonderful-coyote/mediclaim-ai.git)
+\`\`\`bash
+git clone https://github.com/wonderful-coyote/mediclaim-ai.git
 cd mediclaim-ai
-```
+\`\`\`
 
 **2. Setup the Backend**
-*Prerequisites: Python 3.9+*
-```bash
+\`\`\`bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-pip install fastapi uvicorn httpx pydantic python-dotenv google-genai transformers torch
-```
-*Create a `.env` file in the backend folder and add your API Keys (`GEMINI_API_KEY`, `HF_TOKEN`, `INTERSWITCH_CLIENT_ID`, `INTERSWITCH_SECRET_KEY`).*
-```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+pip install -r requirements.txt
+\`\`\`
+*Create a `.env` file and add: `GEMINI_API_KEY`, `HF_TOKEN`, `INTERSWITCH_CLIENT_ID`, `INTERSWITCH_SECRET_KEY`.*
+\`\`\`bash
 uvicorn main:app --reload
-```
+\`\`\`
 
 **3. Setup the Frontend**
-*Prerequisites: Node.js & npm*
 Open a new terminal window:
-```bash
+\`\`\`bash
 cd frontend
 npm install
 npm run dev
-```
-
-**4. Access the Terminal**
-Open your browser and navigate to `http://localhost:3000`. 
-* **Junior Doctor Terminal:** Select from the dropdown `Dr. Ogooluwa Isaac` (Password: `123`)
-* **Senior Consultant Dashboard:** Select from the dropdown `Dr. Kunle Ade` (Password: `123`)
+\`\`\`
 
 ---
 
 ## 👥 The Builders
 
-We built this platform from the ground up during this hackathon, iterating through complex logic flows, database structures, and AI prompt engineering to ensure it wasn't just a UI mockup, but a truly functional enterprise MVP.
+We built this platform from the ground up during this hackathon, iterating through complex logic flows, database structures, cloud deployments, and AI prompt engineering to ensure it wasn't just a UI mockup, but a truly functional enterprise MVP.
 
-* **Dr. Isaac Akinsika (Ogooluwa) | Developer & Team Lead**
-  * *Role:* Architected the FastAPI backend, integrated the Gemini and Interswitch APIs, built the 2-Tier offline fallback redundancy, and developed the Next.js frontend interfaces. Bringing clinical domain expertise and a deep understanding of the Nigerian health insurance landscape.
+* **Dr. Isaac Akinsika | Developer & Team Lead**
+  * *Role:* Architected the decoupled FastAPI backend, integrated the Gemini and Interswitch APIs, built the 2-Tier offline fallback redundancy, deployed the Docker infrastructure, and developed the Next.js frontend interfaces. Brings deep clinical domain expertise, alongside extensive research in healthcare financing and the Nigerian health insurance landscape.
   * *Contact:* wiz0isaac@gmail.com
-* **Ekemdi Anezi | Project Manager & Researcher**
+* **Anezi Ekemdi | Project Manager & Researcher**
   * *Role:* Conducted deep research into Nigerian HMO bottlenecks, designed the product logic and Dynamic SLA flow, managed project execution, and ensured the MVP directly solved the hackathon's core challenges.
   * *Contact:* ekemdianezi@gmail.com
 
