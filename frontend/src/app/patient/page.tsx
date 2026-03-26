@@ -84,7 +84,7 @@ export default function PatientPortal() {
     const fetchPatientData = async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/v1/patient/${patientId}`,
+          `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}`,
         );
         if (res.ok) {
           const data = await res.json();
@@ -92,7 +92,7 @@ export default function PatientPortal() {
           setClaimHistory(data.claims);
         }
         const txRes = await fetch(
-          `http://127.0.0.1:8000/api/v1/patient/${patientId}/transactions`,
+          `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}/transactions`,
         );
         if (txRes.ok) {
           const txData = await txRes.json();
@@ -144,7 +144,7 @@ export default function PatientPortal() {
         }
         try {
           const res = await fetch(
-            `http://127.0.0.1:8000/api/v1/patient/${patientId}/fund`,
+            `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}/fund`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
