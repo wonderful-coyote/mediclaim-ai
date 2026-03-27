@@ -83,32 +83,74 @@ You can interact with the live production environment right now:
 
 ### ⚙️ Run the Source Code Locally
 **1. Clone the repository**
-\`\`\`bash
+```bash
 git clone https://github.com/wonderful-coyote/mediclaim-ai.git
 cd mediclaim-ai
-\`\`\`
+```
 
 **2. Setup the Backend**
-\`\`\`bash
+```bash
 cd backend
 python -m venv .venv
 source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 pip install -r requirements.txt
-\`\`\`
+```
 *Create a `.env` file and add: `GEMINI_API_KEY`, `HF_TOKEN`, `INTERSWITCH_CLIENT_ID`, `INTERSWITCH_SECRET_KEY`.*
-\`\`\`bash
+```bash
 uvicorn main:app --reload
-\`\`\`
+```
 
 **3. Setup the Frontend**
 Open a new terminal window:
-\`\`\`bash
+```bash
 cd frontend
 npm install
 npm run dev
-\`\`\`
+```
 
 ---
+
+## 📖 How to Use This App (Test Guide)
+
+We designed this MVP to be fully interactive. All User IDs are conveniently located in the login dropdowns, and the password for all accounts is **`123`**. 
+
+To experience the full power of the Dual-Matrix AI and the Interswitch payment loop, please follow these testing scenarios:
+
+### Test 1: The AI Medical Auditor (Doctor Flow)
+1. Go to the Live Doctor Terminal: [[Link Here](https://mediclaim-ai-steel.vercel.app/)]
+2. Select a Doctor ID from the dropdown and enter password `123`.
+3. Notice the patient's Interswitch Card Balance is visible right at the point of care.
+4. **Create a Claim:** Select a test (e.g., Ultrasound or Appendectomy) and paste these exact clinical notes into the system to simulate a valid claim:
+   > **PC:** 2-day history of right lower quadrant (RLQ) abdominal pain, vomiting, and fever. 
+   > **HPC:** Pain started periumbilical and migrated to the RLQ after 6 hours. Vomited 3 times, non-bilious. No diarrhea. 
+   > **Exam:** Patient is acutely ill-looking and febrile (Temp 38.5°C). Abdomen is flat but does not move with respiration. Marked tenderness at McBurney's point. Positive rebound tenderness and involuntary guarding. Rovsing's sign is positive. 
+   > **Dx:** Acute Appendicitis.
+5. **Submit & Watch the AI:** The AI will instantly audit the logical chain of custody and assign an SLA tier:
+   * 🟢 **> 90% Match:** Auto-approved for Instant Payout.
+   * 🟡 **75% - 89% Match:** Flagged for 24-Hour Settlement.
+   * 🟠 **50% - 74% Match:** Flagged for 48-Hour Escrow.
+   * 🔴 **< 50% Match:** Fraud Catch (Subject to 72-Hour Audit).
+
+### Test 2: The Interswitch Payment Gateway (Patient Flow)
+1. Navigate to the Patient Portal: [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
+2. Select Patient ID **`PT-1029`** from the dropdown and enter password `123`.
+3. View the real-time financial dashboard to track HMO claims and wallet balances.
+4. Click **"Fund Wallet"** to interact with the live Interswitch API.
+5. Use this official Interswitch Test Card to successfully complete a transaction:
+   * **Card Brand:** Verve
+   * **Card Number:** `5061050254756707864`
+   * **Expiry:** `06/26`
+   * **CVV:** `111`
+   * **PIN:** `1111`
+   * **OTP:** `123456`
+
+### Test 3: The Escalation Loop & Live Chat (Consultant Flow)
+This flow is triggered automatically if the Junior Doctor's AI score in Test 1 is below 90%. 
+
+1. **Trigger the Review (Junior Doctor Side):** After receiving a sub-90% AI score, click the **"Send for Review"** button and select a specific Senior Consultant to route the claim to them. 
+2. **Login as the Consultant:** Return to the main login screen. Select the *exact same Senior Consultant ID* that was chosen in the previous step, and enter password `123`.
+3. **The Clinical Query (Live Chat):** Open the flagged investigation request. Use the built-in **Chat Box** to send a direct query to the Junior Doctor, asking for better clinical justification (the Junior Doctor must provide a response to proceed).
+4. **Final Authorization:** After reviewing the chat history and the AI's initial risk score, click **Authorize** or **Deny** to make the final clinical decision and either deduct or block the Co-pay funds.
 
 ## 👥 The Builders
 
