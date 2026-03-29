@@ -19,7 +19,11 @@ pinned: false
 ## 🚀 The Vision & The Problem
 In the Nigerian healthcare system, the biggest pain point for hospitals is **Days Sales Outstanding (DSO)**. Hospitals perform life-saving procedures but wait 40 to 60 days for Health Maintenance Organizations (HMOs) to pay them. Why? Because human auditors must manually review every single claim to prevent clinical upcoding and insurance fraud. Hospitals run out of cash, and the quality of patient care drops. 
 
-**MediClaim bridges the gap between clinical intent and financial settlement.** We are not just an Electronic Health Record (EHR) system; we are a real-time risk engine. By mathematically verifying the **Logical Chain of Custody** between a patient's symptoms, the doctor's diagnosis, and the requested procedure, MediClaim protects HMO funds while ensuring hospitals maintain instant cash flow.
+Simultaneously, the out-of-pocket payment experience for patients is deeply broken. In standard government and public hospitals across Nigeria, patients are forced to navigate a fragmented, physically exhausting billing system. A patient receives a paper invoice in the consulting room, walks to a centralized revenue/cashier unit (often in a completely different wing or building), endures a long queue just to make a payment, and then walks all the way back to the doctor or pharmacy to receive care. This physical distance and redundant queuing wastes critical time, especially during emergencies.
+
+**MediClaim bridges the gap between clinical intent and financial settlement.** We are not just an Electronic Health Record (EHR) system; we are a real-time risk and payment engine. By mathematically verifying the **Logical Chain of Custody** between a patient's symptoms, the doctor's diagnosis, and the requested procedure, MediClaim protects HMO funds while ensuring hospitals maintain instant cash flow. 
+
+Furthermore, **MediClaim eliminates the physical payment distance for the patient.** Out-of-pocket co-pays are instantly deducted right at the doctor's desk via the Interswitch Smart Wallet. Even if the wallet is unfunded, the system instantly generates a dynamic POS Paycode, entirely cutting out the need for patients to carry paper invoices back and forth across the hospital.
 
 ## 🏆 Hackathon Objectives Achieved
 - [x] **Working MVP:** A fully functional, database-backed (SQLite) end-to-end flow from Junior Doctor order to Consultant Peer Review, to final wallet deduction. 
@@ -44,41 +48,48 @@ If the claim passes, the Interswitch payment gateway is triggered. If it fails, 
 
 ## ✨ Key Business Features & Comprehensive Functionality
 
-### 1. 💳 The Patient Experience (Interswitch Smart Wallet)
+### 1. 🏛️ Hospital CFO & Financial Engine (New)
+* **Real-Time Financial Dashboard:** A secure administrative terminal for tracking **Available Balance (Settled Cash)** and **Pending Escrow (Unsettled HMO Payouts)**.
+* **HMO Escrow State Machine:** Advanced backend logic that manages funds based on AI confidence. High-scoring claims are instantly settled, while moderate scores are trapped in Escrow until authorized by a Senior Consultant.
+* **Interswitch Co-pay Automation:** Automatically deducts 20% patient co-pays via Interswitch WebPay, which are then instantly credited to the hospital's available balance to ensure immediate liquidity.
+
+### 2. 💳 The Patient Experience (Interswitch Smart Wallet)
 Patients are no longer left in the dark about their healthcare costs or forced to walk back and forth to billing departments. 
 * **Zero-Friction Co-Pays:** The patient's 20% co-pay is instantly verified and deducted from their linked Interswitch Smart Wallet right at the doctor's desk.
 * **Real-Time Funding:** Patients can top up their wallets directly, powered by live communication with the Interswitch API.
 * **Fallback POS Paycodes:** If the patient's wallet lacks funds, the system automatically catches the deficit and generates a dynamic **Interswitch POS Paycode**. The patient simply takes this code to the cashier to pay the exact outstanding balance.
 
-### 2. 👨‍⚕️ The Junior Doctor Experience (Dynamic SLAs)
+### 3. 👨‍⚕️ The Junior Doctor Experience (Dynamic SLAs)
 Doctors can focus on medicine, not billing. We tied the AI's confidence score directly to the HMO Payout Service Level Agreement (SLA):
 * 🟢 **> 90% Match:** Auto-approved for **Instant Payout** via Interswitch.
 * 🟡 **75% - 89% Match:** Flagged for **24-Hour Settlement** (Requires Consultant Fast-Track).
 * 🟠 **50% - 74% Match:** Flagged for **48-Hour Escrow**.
 * 🔴 **< 50% Match (Fraud Catch):** Subject to **72-Hour HMO Audit**.
 
-### 3. 🩺 The Consultant Dashboard & Coaching Loop
+### 4. 🩺 The Consultant Dashboard & Coaching Loop
 A dedicated, real-time interface for Senior Consultants to review suspicious claims. The built-in **AI Debugger** generates a bulleted list of feedback, telling junior doctors exactly what textbook criteria they missed in their notes. This acts as a real-time clinical coaching tool while allowing consultants to authorize, query, or reject funds.
 
-### 4. 🧾 Automated Digital Receipts
+### 5. 🧾 Automated Digital Receipts
 Upon successful authorization, the system generates a comprehensive financial breakdown (HMO Coverage vs. Patient Co-pay) with functionality to print or instantly email the receipt to the patient.
 
 ---
 
 ## 🛠️ Tech Stack
-* **Frontend:** Next.js, React, Tailwind CSS (Deployed on Vercel).
-* **Backend:** FastAPI, Python, Docker, SQLite (Deployed on Hugging Face Spaces).
+* **Frontend:** Next.js (TypeScript), Tailwind CSS (Deployed on Vercel).
+* **Backend:** FastAPI (Python), Docker, SQLite (Deployed on Hugging Face Spaces).
 * **AI & NLP:** Google Gemini 2.0 Flash, PubMedBERT (HuggingFace Transformers).
-* **Payments:** Interswitch API Integration.
+* **Payments:** Interswitch WebPay & Paycode API Integration.
+* **State Management:** Backend Financial State Machine for Escrow/Settlement transitions.
 
 ---
 
-## 💻 Live Links & Running Locally (For Judges)
+## 💻 Live Links & Running Locally
 
 ### 🌐 Live Demo Access
 You can interact with the live production environment right now:
 * **Doctor Terminal:** [[Link Here](https://mediclaim-ai-steel.vercel.app/)]
 * **Patient Wallet:** [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
+* * **CFO Dashboard:** [[Link Here](https://mediclaim-ai-steel.vercel.app/admin)]
 * **Backend API Docs:** [[Link Here](https://wonderfulcoyote-mediclaim-ai.hf.space/docs)]
 
 ### ⚙️ Run the Source Code Locally
@@ -151,6 +162,15 @@ This flow is triggered automatically if the Junior Doctor's AI score in Test 1 i
 2. **Login as the Consultant:** Return to the main login screen. Select the *exact same Senior Consultant ID* that was chosen in the previous step, and enter password `123`.
 3. **The Clinical Query (Live Chat):** Open the flagged investigation request. Use the built-in **Chat Box** to send a direct query to the Junior Doctor, asking for better clinical justification (the Junior Doctor must provide a response to proceed).
 4. **Final Authorization:** After reviewing the chat history and the AI's initial risk score, click **Authorize** or **Deny** to make the final clinical decision and either deduct or block the Co-pay funds.
+
+### Test 4: The CFO Financial Terminal (Admin Flow)
+Navigate to the Admin Portal: [[Link Here](https://mediclaim-ai-steel.vercel.app/admin)]
+
+Login with ID CFO-001 and password 123.
+
+Real-time Tracking: Watch the Available Balance increase by 20% (Patient Co-pay) instantly when a doctor orders a test, and watch the 80% HMO Payout enter Pending Escrow.
+
+Escrow Release: Once a Consultant authorizes a sub-90% claim, watch the funds move from Escrow to Available Balance in real-time.
 
 ## 👥 The Builders
 
