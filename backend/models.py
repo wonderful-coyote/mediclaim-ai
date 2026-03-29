@@ -26,10 +26,30 @@ class MedicalClaim(BaseModel):
     hospital_id: str
     amount: float
     
-    # --- NEW FIELDS FOR THE AI AUDITOR ---
+    # --- EXISTING FIELDS FOR THE AI AUDITOR ---
     procedure_id: Optional[str] = None
     procedure_name: Optional[str] = None
     
     diagnosis_codes: Optional[List[dict]] = None
     clinical_notes: Optional[str] = None
     urgency_level: Optional[str] = None
+    
+    # --- NEW FINANCIAL FIELDS FOR HOSPITAL CFO DASHBOARD ---
+    total_cost: float = 50000.0      # Total cost of the procedure
+    patient_copay: float = 10000.0   # 20% paid via Interswitch
+    hmo_payout: float = 40000.0      # 80% owed by HMO
+    
+    # --- THE STATE MACHINE TRACKER ---
+    settlement_status: str = "PENDING_AI_AUDIT"
+    # Valid States: 
+    # "INSTANT_SETTLED"
+    # "PENDING_CONSULTANT"
+    # "PENDING_TIMER"
+    # "HMO_AUDIT_REJECTED"
+    # "SETTLED"
+
+# --- NEW MODEL: The Hospital's Master Bank Account ---
+class HospitalWallet(BaseModel):
+    id: str = "HW-001"                   # Default ID for the master wallet
+    available_balance: float = 1250000.0 # Starting cash for the demo
+    pending_escrow: float = 0.0          # Money trapped in timers/approvals

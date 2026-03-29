@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
+const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
+
 // 🌟 Tell TypeScript about the Interswitch Script attached to the window
 declare global {
   interface Window {
@@ -83,17 +85,16 @@ export default function PatientPortal() {
     if (!isLoggedIn) return;
     const fetchPatientData = async () => {
       try {
-        const res = await fetch(
-          `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}`,
-        );
+        // 🌟 Uses the master link
+        const res = await fetch(`${API_BASE_URL}/api/v1/patient/${patientId}`);
         if (res.ok) {
           const data = await res.json();
           setBalance(data.balance);
           setClaimHistory(data.claims);
         }
-        const txRes = await fetch(
-          `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}/transactions`,
-        );
+        
+        // 🌟 Uses the master link
+        const txRes = await fetch(`${API_BASE_URL}/api/v1/patient/${patientId}/transactions`);
         if (txRes.ok) {
           const txData = await txRes.json();
           setTransactions(txData);
@@ -143,17 +144,15 @@ export default function PatientPortal() {
           return;
         }
         try {
-          const res = await fetch(
-            `https://wonderfulcoyote-mediclaim-ai.hf.space/api/v1/patient/${patientId}/fund`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                amount: rawAmount,
-                txn_ref: transactionReference,
-              }),
-            },
-          );
+          // 🌟 Uses the master link
+          const res = await fetch(`${API_BASE_URL}/api/v1/patient/${patientId}/fund`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount: rawAmount,
+              txn_ref: transactionReference,
+            }),
+          });
           if (res.ok) {
             const data = await res.json();
             setBalance(data.new_balance);
@@ -234,8 +233,7 @@ export default function PatientPortal() {
             M
           </div>
           <span className="font-black tracking-tight text-lg text-slate-800">
-            MediClaim{" "}
-            <span className="font-medium text-slate-400">Patient</span>
+            MediClaim <span className="font-medium text-slate-400">Patient</span>
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -274,7 +272,6 @@ export default function PatientPortal() {
               </div>
             </div>
 
-            {/* 🌟 FIXED: Flexible Height, Wrapping Text */}
             <div className="bg-slate-900 p-6 md:p-8 rounded-2xl text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-40 h-auto">
               <div className="relative z-10 mb-4">
                 <p className="text-[10px] opacity-60 uppercase font-bold tracking-wider mb-1">
@@ -340,7 +337,6 @@ export default function PatientPortal() {
                     key={tx.id}
                     className="flex justify-between items-start gap-3 pb-3 border-b border-slate-50 last:border-0"
                   >
-                    {/* 🌟 FIXED: Allows description to take available space but forces the amount to stay intact */}
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-black text-slate-800 leading-tight truncate">
                         {tx.description}
@@ -349,7 +345,6 @@ export default function PatientPortal() {
                         {tx.type} • {new Date(tx.timestamp).toLocaleDateString()}
                       </p>
                     </div>
-                    {/* 🌟 FIXED: shrink-0 and whitespace-nowrap to prevent line breaks */}
                     <div
                       className={`text-sm font-black shrink-0 whitespace-nowrap ${tx.type === "CREDIT" ? "text-emerald-500" : "text-rose-500"}`}
                     >
@@ -448,21 +443,13 @@ export default function PatientPortal() {
                     </span>
                   </div>
 
-                  {/* 🌟 SUCCESS: Wallet Covered Co-pay */}
                   {claim.status === "DISPATCHED" && !claim.paycode && (
                     <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-bold text-slate-500 uppercase">
                           Coverage Breakdown
                         </span>
-                        <button
-                          onClick={() => window.print()}
-                          className="text-[9px] font-black text-emerald-600 underline uppercase"
-                        >
-                          Receipt
-                        </button>
                       </div>
-
                       <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
                         <span className="text-xs text-slate-600 font-medium">
                           HMO Contribution (80%)
@@ -471,7 +458,6 @@ export default function PatientPortal() {
                           ₦{(claim.deducted_amount * 4).toLocaleString()}
                         </span>
                       </div>
-
                       <div className="flex justify-between items-center">
                         <span className="text-xs font-black text-slate-800">
                           Your Co-pay (20%)
@@ -480,15 +466,12 @@ export default function PatientPortal() {
                           ₦{(claim.deducted_amount || 0).toLocaleString()}
                         </span>
                       </div>
-
                       <p className="text-[9px] text-slate-400 italic text-center pt-1">
-                        AI Audit Confirmed: {Math.round(claim.ai_score * 100)}%
-                        Medical Necessity
+                        AI Audit Confirmed: {Math.round(claim.ai_score * 100)}% Medical Necessity
                       </p>
                     </div>
                   )}
 
-                  {/* 🌟 FALLBACK: Insufficient Funds, Paycode Generated */}
                   {claim.status === "DISPATCHED" && claim.paycode && (
                     <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 space-y-3">
                       <div className="flex justify-between items-center pb-2 border-b border-amber-200/50">
@@ -496,7 +479,6 @@ export default function PatientPortal() {
                           Action Required: POS Payment
                         </span>
                       </div>
-
                       <div className="text-center py-2">
                         <p className="text-xs text-amber-800 font-medium mb-3">
                           Your wallet balance was insufficient to cover the
@@ -506,7 +488,6 @@ export default function PatientPortal() {
                           {claim.paycode}
                         </span>
                       </div>
-
                       {(claim.deducted_amount || 0) > 0 && (
                         <div className="flex justify-between items-center pt-2 border-t border-amber-200/50">
                           <span className="text-xs font-black text-slate-700">
@@ -517,19 +498,15 @@ export default function PatientPortal() {
                           </span>
                         </div>
                       )}
-
                       <p className="text-[9px] text-amber-600 italic text-center pt-1">
-                        AI Audit Confirmed: {Math.round(claim.ai_score * 100)}%
-                        Medical Necessity
+                        AI Audit Confirmed: {Math.round(claim.ai_score * 100)}% Medical Necessity
                       </p>
                     </div>
                   )}
 
-                  {/* 🌟 REJECTED: AI or Peer Review Denial */}
                   {claim.status === "REJECTED" && (
                     <div className="bg-rose-50 rounded-xl p-4 border border-rose-100 text-xs text-rose-800 font-medium">
-                      Medical necessity could not be established by AI Auditor (
-                      {claim.resolved_by}). Your wallet was not charged.
+                      Medical necessity could not be established by AI Auditor ({claim.resolved_by}). Your wallet was not charged.
                     </div>
                   )}
                 </div>
