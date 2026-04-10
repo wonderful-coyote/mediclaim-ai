@@ -7,79 +7,148 @@ sdk: docker
 pinned: false
 ---
 
-# 🏥 MediClaim: AI-Powered Risk-Adjusted Financial Settlement Engine
+# 🏥 MediClaim: AI-Powered Clinical Adjudication, HMO Risk Control, and Point-of-Care Settlement Engine
 
 [![Hackathon Ready](https://img.shields.io/badge/Status-Hackathon_Ready-success)](https://mediclaim-ai-steel.vercel.app/)
 [![Interswitch API](https://img.shields.io/badge/Integration-Interswitch_API-blue)](https://developer.interswitchng.com/)
 [![Gemini 2.0](https://img.shields.io/badge/Cloud_AI-Gemini_2.0_Flash-purple)](https://ai.google.dev/)
 [![PubMedBERT](https://img.shields.io/badge/Offline_NLP-PubMedBERT-orange)](https://huggingface.co/pritamdeka/PubMedBERT-MNLI-MedNLI)
 
-> **Real-time AI clinical auditing and instant HMO claim settlement at the point of care.**
+> **Real-time AI clinical auditing, policy-aware HMO adjudication, and instant patient self-pay fallback at the point of care.**
 
 ## 🚀 The Vision & The Problem
-In the Nigerian healthcare system, the biggest pain point for hospitals is **Days Sales Outstanding (DSO)**. Hospitals perform life-saving procedures but wait 40 to 60 days for Health Maintenance Organizations (HMOs) to pay them. Why? Because human auditors must manually review every single claim to prevent clinical upcoding and insurance fraud. Hospitals run out of cash, and the quality of patient care drops. 
+In the Nigerian healthcare system, one of the biggest pain points for hospitals is **Days Sales Outstanding (DSO)**. Hospitals perform life-saving procedures but wait 40 to 60 days for Health Maintenance Organizations (HMOs) to pay them. Why? Because human auditors must manually review claims to prevent clinical upcoding, policy abuse, and fraud. Hospitals lose liquidity, administrators lose visibility, and patient care slows down.
 
-Simultaneously, the out-of-pocket payment experience for patients is deeply broken. In standard government and public hospitals across Nigeria, patients are forced to navigate a fragmented, physically exhausting billing system. A patient receives a paper invoice in the consulting room, walks to a centralized revenue/cashier unit (often in a completely different wing or building), endures a long queue just to make a payment, and then walks all the way back to the doctor or pharmacy to receive care. This physical distance and redundant queuing wastes critical time, especially during emergencies.
+At the same time, the out-of-pocket payment experience for patients is deeply broken. In many hospitals, a patient receives a paper invoice in the consulting room, walks to a centralized revenue/cashier unit, waits in another queue, pays, and walks back again before care can continue. This fragmentation wastes time, creates friction, and delays treatment.
 
-**MediClaim bridges the gap between clinical intent and financial settlement.** We are not just an Electronic Health Record (EHR) system; we are a real-time risk and payment engine. By mathematically verifying the **Logical Chain of Custody** between a patient's symptoms, the doctor's diagnosis, and the requested procedure, MediClaim protects HMO funds while ensuring hospitals maintain instant cash flow. 
+**MediClaim bridges clinical intent, insurance rules, and financial settlement in one continuous flow.** We are not just an Electronic Health Record (EHR) interface. We are a **real-time adjudication and settlement layer** that verifies the logical chain between symptoms, diagnosis, requested procedure, policy eligibility, HMO benefit limits, patient liability, and final cash movement.
 
-Furthermore, **MediClaim eliminates the physical payment distance for the patient.** Out-of-pocket co-pays are instantly deducted right at the doctor's desk via the Interswitch Smart Wallet. Even if the wallet is unfunded, the system instantly generates a dynamic POS Paycode, entirely cutting out the need for patients to carry paper invoices back and forth across the hospital.
+Furthermore, **MediClaim eliminates the physical payment distance for the patient.** If a claim is HMO-eligible and clinically strong, the hospital gets a fast adjudication outcome. If the patient is no longer HMO-eligible for that procedure, the system does not dead-end the encounter. It automatically pivots into a **self-pay checkout flow** using wallet deduction or a POS paycode so care can still proceed.
 
 ## 🏆 Hackathon Objectives Achieved
-- [x] **Working MVP:** A fully functional, database-backed (SQLite) end-to-end flow from Junior Doctor order to Consultant Peer Review, to final wallet deduction. 
-- [x] **Interswitch API Integration:** Successfully integrated for real-time patient wallet funding and dynamic POS Paycode generation for outstanding balances.
-- [x] **Solves a Real Problem:** Sits perfectly at the intersection of **Health-Tech and Fintech**, eliminating HMO fraud while providing instant liquidity to hospitals.
-- [x] **Live Demo-Ready:** Features an incredibly fast UI, a 2-Tier AI Bouncer for presentation resilience, and real-time database polling.
+- [x] **Working MVP:** A functional, database-backed (SQLite) multi-portal system spanning Doctor, Patient, HMO Auditor, and CFO workflows.
+- [x] **Interswitch API Integration:** Real-time wallet funding and dynamic POS paycode generation for unpaid balances.
+- [x] **AI Clinical Adjudication:** Cloud-first Gemini reasoning with PubMedBERT fallback and rule-calibrated medical-necessity scoring.
+- [x] **Policy + Payment Engine:** Decisions are now based on both clinical confidence and HMO policy constraints, including exhausted benefits and non-covered procedures.
+- [x] **Live Demo-Ready:** Real-time polling, persistent claim history, financial dashboards, and stored review artifacts across portals.
 
 ---
 
-## 🧠 The Architecture: Dual-Matrix AI Validation
-MediClaim doesn't rely on human auditors for every claim. When a Junior Doctor submits a clinical clerkship, the system initiates the **Blind Diagnosis Protocol**. The final diagnosis is stripped away, forcing the AI to evaluate the raw clinical evidence (Presenting Complaints and Physical Exam) independently.
+## 🧠 The Architecture: Dual-Matrix AI + Policy Engine
+MediClaim does not rely on human review for every claim. When a doctor submits a request, the system runs a **clinical audit** and a **policy audit** in parallel.
 
-* **Tier 1 (The Cloud Genius): Gemini 2.0 Flash Auditor** Our primary reasoning engine acts as a Senior Medical Consultant, reading the clerkship via cloud API and scoring the logical necessity of the ordered procedure.
-* **Tier 2 (The Offline Tank): PubMedBERT Dual-Matrix**
-  If the internet fails or cloud quotas are exceeded, the system instantly falls back to a locally hosted NLP model trained on millions of medical abstracts (MedNLI). It runs two simultaneous mathematical gates:
-  1. **Treatment Indication Gate:** Do the raw symptoms justify the procedure?
-  2. **Diagnostic Confidence Gate:** Do the raw symptoms align with the written diagnosis?
+### Clinical Intelligence Stack
+* **Tier 1 (The Cloud Reasoner): Gemini 2.0 Flash**
+  Our primary reasoning engine behaves like a senior clinical auditor. It reads the submitted notes and scores the medical necessity of the requested investigation or procedure.
 
-If the claim passes, the Interswitch payment gateway is triggered. If it fails, it is flagged for Consultant review with specific, actionable AI coaching suggestions.
+* **Tier 2 (The Medical Fallback): PubMedBERT + Rule-Calibrated Overlay**
+  If cloud reasoning is unavailable or needs fallback support, the system switches to PubMedBERT-based Natural Language Inference and a calibration layer that evaluates:
+  1. **Procedure suitability**
+  2. **Diagnosis support**
+  3. **Disease–procedure compatibility**
+  4. **Clinical evidence completeness**
+
+### Policy & Financial Engine
+After the clinical score is produced, MediClaim applies policy logic:
+- Is the procedure covered by the patient’s plan?
+- Has the patient exhausted the relevant HMO benefit bucket?
+- Is the request still clinically strong enough to proceed as self-pay if HMO funding is unavailable?
+- Should the claim be auto-approved, sent for manual review, auto-rejected, or routed to direct patient checkout?
+
+### Current Decision Rules
+- 🟢 **90% and above + valid policy:** Auto-approved
+- 🟡 **50% to 89% + valid policy:** Manual HMO review
+- 🔴 **Below 50% or poor clinical notes:** Auto-rejected
+- 🟠 **Clinically acceptable but policy exhausted / non-covered:** Routed to **self-pay checkout** instead of dead-ending care
+
+This means clinical validity and HMO validity are now **separate but connected** decisions.
 
 ---
 
 ## ✨ Key Business Features & Comprehensive Functionality
 
-### 1. 🏛️ Hospital CFO & Financial Engine (New)
-* **Real-Time Financial Dashboard:** A secure administrative terminal for tracking **Available Balance (Settled Cash)** and **Pending Escrow (Unsettled HMO Payouts)**.
-* **HMO Escrow State Machine:** Advanced backend logic that manages funds based on AI confidence. High-scoring claims are instantly settled, while moderate scores are trapped in Escrow until authorized by a Senior Consultant.
-* **Interswitch Co-pay Automation:** Automatically deducts 20% patient co-pays via Interswitch WebPay, which are then instantly credited to the hospital's available balance to ensure immediate liquidity.
+### 1. 👨‍⚕️ Doctor Terminal
+The doctor experience now behaves like a real point-of-care authorization console.
 
-### 2. 💳 The Patient Experience (Interswitch Smart Wallet)
-Patients are no longer left in the dark about their healthcare costs or forced to walk back and forth to billing departments. 
-* **Zero-Friction Co-Pays:** The patient's 20% co-pay is instantly verified and deducted from their linked Interswitch Smart Wallet right at the doctor's desk.
-* **Real-Time Funding:** Patients can top up their wallets directly, powered by live communication with the Interswitch API.
-* **Fallback POS Paycodes:** If the patient's wallet lacks funds, the system automatically catches the deficit and generates a dynamic **Interswitch POS Paycode**. The patient simply takes this code to the cashier to pay the exact outstanding balance.
+* **Live Clinical Order Entry:** Select a covered procedure from a patient-specific dictionary filtered by plan.
+* **AI Audit at the Bedside:** Notes are audited immediately against diagnosis, procedure, and policy rules.
+* **Stable Claim Identity:** A single claim now flows consistently from audit to queue to dispatch.
+* **Automatic Smart Routing:**
+  - High-confidence, policy-valid claims can proceed immediately.
+  - Borderline claims are routed to HMO review.
+  - Weak claims are rejected with reasoning.
+  - Policy-exhausted but clinically valid claims are redirected into self-pay flow.
+* **Resubmission Loop:** If the HMO asks for more information, the doctor can update notes, reply, and re-run the audit on the same claim.
+* **Receipts at Dispatch:** Once finalized, the doctor portal generates a receipt-ready breakdown for the patient.
 
-### 3. 👨‍⚕️ The Junior Doctor Experience (Dynamic SLAs)
-Doctors can focus on medicine, not billing. We tied the AI's confidence score directly to the HMO Payout Service Level Agreement (SLA):
-* 🟢 **> 90% Match:** Auto-approved for **Instant Payout** via Interswitch.
-* 🟡 **75% - 89% Match:** Flagged for **24-Hour Settlement** (Requires Consultant Fast-Track).
-* 🟠 **50% - 74% Match:** Flagged for **48-Hour Escrow**.
-* 🔴 **< 50% Match (Fraud Catch):** Subject to **72-Hour HMO Audit**.
+### 2. 🩺 HMO Auditor Workspace
+The HMO dashboard is now more than a queue. It acts as a **persistent medical audit console**.
 
-### 4. 🩺 The Consultant Dashboard & Coaching Loop
-A dedicated, real-time interface for Senior Consultants to review suspicious claims. The built-in **AI Debugger** generates a bulleted list of feedback, telling junior doctors exactly what textbook criteria they missed in their notes. This acts as a real-time clinical coaching tool while allowing consultants to authorize, query, or reject funds.
+* **Manual Review Queue:** Only real manual-review claims appear here.
+* **Stored HMO Claim History:** Previously adjudicated claims are retained and can be reopened later.
+* **Persistent Review Artifact:** Stored records now keep:
+  - clinical notes
+  - AI reasoning
+  - debugger suggestions
+  - communication messages
+  - financial snapshot
+  - resolver and settlement state
+* **Claim Detail Popup:** A View action opens the historical claim in a modal so past decisions can always be inspected.
+* **Approvals, Denials, and Queries:** Auditors can authorize, reject, or request more information without losing claim history.
 
-### 5. 🧾 Automated Digital Receipts
-Upon successful authorization, the system generates a comprehensive financial breakdown (HMO Coverage vs. Patient Co-pay) with functionality to print or instantly email the receipt to the patient.
+### 3. 💳 Patient Portal & Smart Wallet
+Patients are no longer left in the dark about either HMO coverage or personal liability.
+
+* **Live Wallet Balance:** Patients see available smart-wallet balance in real time.
+* **Wallet Funding:** Top-up is linked to Interswitch flow.
+* **Claim Timeline:** The portal shows claim status, HMO-covered amount, patient-funded amount, and remaining balance.
+* **Self-Pay Continuity:** If a claim cannot use HMO benefits but is still clinically appropriate, the patient can still proceed using wallet deduction or cashier POS payment.
+* **POS Paycode Display:** If there is an outstanding amount, the patient sees the exact paycode to use at cashier/POS.
+* **Responsive Financial UI:** High-value totals, long labels, and long paycodes are handled more safely across breakpoints.
+
+### 4. 🏛️ CFO & Revenue Cycle Dashboard
+The CFO side now works as a genuine settlement-monitoring terminal.
+
+* **Real-Time Financial Dashboard:** Tracks hospital liquid cash, pending HMO escrow, rejected exposure, and self-pay outstanding amounts.
+* **Unified Ledger View:** HMO-funded, self-pay, rejected, and POS-clearing flows are all visible in one place.
+* **Stored Claim Inspection:** Finance can open a claim record and inspect notes, AI reasoning, suggestions, and communications from the backend ledger.
+* **POS Clearance Workflow:** Cashier-cleared claims update financial state more accurately.
+* **Commercial Status Labelling:** Claims are categorized into HMO-funded, self-pay pending, self-pay cleared, rejected, and fully settled paths.
+
+### 5. 🧾 Automated Financial Breakdown & Receipts
+Upon dispatch or payment, MediClaim generates a clear financial breakdown showing:
+- total procedure cost
+- HMO-covered amount
+- patient-funded amount
+- outstanding balance
+- paycode (if any)
+- final resolver / authorization source
+
+### 6. 🧠 AI Debugger & Clinical Coaching Loop
+The built-in debugger now explains not just the score, but **why** the score was high or low.
+
+* **Clinical Rationale:** Shows how the note supported or failed the diagnosis/procedure relationship.
+* **Procedure Compatibility Checks:** Helps prevent a strong diagnosis note from incorrectly boosting the wrong procedure.
+* **Improvement Suggestions:** If a claim is weak, the system tells the clinician what evidence was missing.
+* **Stored Debug Record:** Those suggestions can now remain attached to the claim for later auditing.
+
+### 7. 🛡️ Policy-Aware Benefit Control
+This is one of the biggest upgrades from the original MVP.
+
+* **Cumulative Benefit Tracking:** Repeated claims now consume the relevant HMO benefit bucket instead of letting the same benefit be reused incorrectly.
+* **Benefit Exhaustion Enforcement:** Once a patient has exhausted a relevant limit, the HMO is no longer charged again.
+* **Self-Pay Fallback:** Exhausted HMO benefit no longer means care stops. If clinically appropriate, the patient can pay out of pocket.
+* **Hard Rejections Where Necessary:** Bad notes, low-confidence claims, or true policy failures can still be blocked automatically.
 
 ---
 
 ## 🛠️ Tech Stack
-* **Frontend:** Next.js (TypeScript), Tailwind CSS (Deployed on Vercel).
-* **Backend:** FastAPI (Python), Docker, SQLite (Deployed on Hugging Face Spaces).
-* **AI & NLP:** Google Gemini 2.0 Flash, PubMedBERT (HuggingFace Transformers).
-* **Payments:** Interswitch WebPay & Paycode API Integration.
-* **State Management:** Backend Financial State Machine for Escrow/Settlement transitions.
+* **Frontend:** Next.js, TypeScript, Tailwind CSS
+* **Backend:** FastAPI, Python, SQLite
+* **AI & NLP:** Google Gemini 2.0 Flash, PubMedBERT / MedNLI fallback
+* **Payments:** Interswitch WebPay, Paycode generation, wallet funding flow
+* **Storage:** SQLite tables for patients, audit ledger, queue, wallet transactions, hospital wallet, and persisted HMO claim records
+* **State Management:** Backend adjudication engine for approval, manual review, rejection, self-pay routing, escrow, and POS clearance
 
 ---
 
@@ -88,8 +157,9 @@ Upon successful authorization, the system generates a comprehensive financial br
 ### 🌐 Live Demo Access
 You can interact with the live production environment right now:
 * **Doctor Terminal:** [[Link Here](https://mediclaim-ai-steel.vercel.app/)]
-* **Patient Wallet:** [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
-* * **CFO Dashboard:** [[Link Here](https://mediclaim-ai-steel.vercel.app/admin)]
+* **Patient Portal:** [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
+* **HMO Audit Workspace:** [[Link Here](https://mediclaim-ai-steel.vercel.app/hmo)]
+* **CFO Dashboard:** [[Link Here](https://mediclaim-ai-steel.vercel.app/cfo)]
 * **Backend API Docs:** [[Link Here](https://wonderfulcoyote-mediclaim-ai.hf.space/docs)]
 
 ### ⚙️ Run the Source Code Locally
@@ -106,7 +176,12 @@ python -m venv .venv
 source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-*Create a `.env` file and add: `GEMINI_API_KEY`, `HF_TOKEN`, `INTERSWITCH_CLIENT_ID`, `INTERSWITCH_SECRET_KEY`.*
+Create a `.env` file and add:
+- `GEMINI_API_KEY`
+- `HF_TOKEN`
+- `INTERSWITCH_CLIENT_ID`
+- `INTERSWITCH_SECRET_KEY`
+
 ```bash
 uvicorn main:app --reload
 ```
@@ -123,64 +198,80 @@ npm run dev
 
 ## 📖 How to Use This App (Test Guide)
 
-We designed this MVP to be fully interactive. All User IDs are conveniently located in the login dropdowns, and the password for all accounts is **`123`**. 
+All demo accounts currently use the password **`123`**.
 
-To experience the full power of the Dual-Matrix AI and the Interswitch payment loop, please follow these testing scenarios:
+### Test 1: High-Confidence HMO Approval
+1. Go to the Doctor Terminal.
+2. Login as a clinician and select a patient with valid coverage.
+3. Pick **Appendectomy** or another covered procedure.
+4. Use a strong appendicitis note, for example:
+   > **PC:** 24h history of severe RLQ pain, anorexia, and nausea.  
+   > **HPC:** Pain migrated from periumbilical region to RLQ.  
+   > **Exam:** Temp 38.6°C. Severe tenderness at McBurney’s point. Positive Rovsing and Psoas signs. Guarding present.  
+   > **Labs:** WBC 15.2 x10^9/L with neutrophilia. CRP elevated.  
+   > **Imaging:** Ultrasound shows a dilated non-compressible appendix with periappendiceal fluid.  
+   > **Dx:** Acute Uncomplicated Appendicitis.
+5. Watch the AI score and settlement path.
+6. If the patient still has valid HMO eligibility, the claim should move through the automatic route.
 
-### Test 1: The AI Medical Auditor (Doctor Flow)
-1. Go to the Live Doctor Terminal: [[Link Here](https://mediclaim-ai-steel.vercel.app/)]
-2. Select a Doctor ID from the dropdown and enter password `123`.
-3. Notice the patient's Interswitch Card Balance is visible right at the point of care.
-4. **Create a Claim:** Select a test (e.g., Ultrasound or Appendectomy) and paste these exact clinical notes into the system to simulate a valid claim:
-   > **PC:** 2-day history of right lower quadrant (RLQ) abdominal pain, vomiting, and fever. 
-   > **HPC:** Pain started periumbilical and migrated to the RLQ after 6 hours. Vomited 3 times, non-bilious. No diarrhea. 
-   > **Exam:** Patient is acutely ill-looking and febrile (Temp 38.5°C). Abdomen is flat but does not move with respiration. Marked tenderness at McBurney's point. Positive rebound tenderness and involuntary guarding. Rovsing's sign is positive. 
-   > **Dx:** Acute Appendicitis.
-5. **Submit & Watch the AI:** The AI will instantly audit the logical chain of custody and assign an SLA tier:
-   * 🟢 **> 90% Match:** Auto-approved for Instant Payout.
-   * 🟡 **75% - 89% Match:** Flagged for 24-Hour Settlement.
-   * 🟠 **50% - 74% Match:** Flagged for 48-Hour Escrow.
-   * 🔴 **< 50% Match:** Fraud Catch (Subject to 72-Hour Audit).
+### Test 2: Manual HMO Review
+1. Submit a note that is plausible but incomplete.
+2. If the AI score lands in the **50–89%** range and policy still allows funding, the claim should go to the HMO queue.
+3. Open the HMO Auditor Workspace.
+4. Review, query, approve, or reject the claim.
 
-### Test 2: The Interswitch Payment Gateway (Patient Flow)
-1. Navigate to the Patient Portal: [[Link Here](https://mediclaim-ai-steel.vercel.app/patient)]
-2. Select Patient ID **`PT-1029`** from the dropdown and enter password `123`.
-3. View the real-time financial dashboard to track HMO claims and wallet balances.
-4. Click **"Fund Wallet"** to interact with the live Interswitch API.
-5. Use this official Interswitch Test Card to successfully complete a transaction:
-   * **Card Brand:** Verve
-   * **Card Number:** `5061050254756707864`
-   * **Expiry:** `06/26`
-   * **CVV:** `111`
-   * **PIN:** `1111`
-   * **OTP:** `123456`
+### Test 3: Auto-Reject for Poor Clinical Support
+1. Submit weak or vague notes with missing complaint / diagnosis structure.
+2. The system should auto-reject instead of sending the case to manual review.
+3. The reasoning and suggestions should explain why.
 
-### Test 3: The Escalation Loop & Live Chat (Consultant Flow)
-This flow is triggered automatically if the Junior Doctor's AI score in Test 1 is below 90%. 
+### Test 4: Policy Exhaustion / Self-Pay Checkout
+1. Use a patient who has exhausted the applicable surgical or policy benefit.
+2. Submit a clinically strong note for a procedure that would otherwise qualify.
+3. The HMO should no longer fund the request.
+4. Instead of dead-ending the workflow, the claim should move into **self-pay** via wallet deduction or POS paycode.
+5. Confirm the patient portal and CFO dashboard both reflect that self-pay state.
 
-1. **Trigger the Review (Junior Doctor Side):** After receiving a sub-90% AI score, click the **"Send for Review"** button and select a specific Senior Consultant to route the claim to them. 
-2. **Login as the Consultant:** Return to the main login screen. Select the *exact same Senior Consultant ID* that was chosen in the previous step, and enter password `123`.
-3. **The Clinical Query (Live Chat):** Open the flagged investigation request. Use the built-in **Chat Box** to send a direct query to the Junior Doctor, asking for better clinical justification (the Junior Doctor must provide a response to proceed).
-4. **Final Authorization:** After reviewing the chat history and the AI's initial risk score, click **Authorize** or **Deny** to make the final clinical decision and either deduct or block the Co-pay funds.
+### Test 5: Wallet Funding & POS Completion
+1. Open the Patient Portal.
+2. Login as a patient and view wallet balance and claims.
+3. Fund the wallet through the Interswitch flow.
+4. If a claim still has an unpaid balance, use the POS paycode.
+5. Confirm that the CFO dashboard can see and clear the payment state.
 
-### Test 4: The CFO Financial Terminal (Admin Flow)
-Navigate to the Admin Portal: [[Link Here](https://mediclaim-ai-steel.vercel.app/admin)]
+### Test 6: Historical Review Audit Trail
+1. Process a claim through HMO review or settlement.
+2. Open the HMO stored claims section or CFO ledger.
+3. Click **View**.
+4. Confirm that notes, reasoning, suggestions, communication logs, and financial state remain accessible.
 
-Login with ID CFO-001 and password 123.
+---
 
-Real-time Tracking: Watch the Available Balance increase by 20% (Patient Co-pay) instantly when a doctor orders a test, and watch the 80% HMO Payout enter Pending Escrow.
+## 🔁 Claim State Logic (Current)
+A simplified view of the current engine is:
 
-Escrow Release: Once a Consultant authorizes a sub-90% claim, watch the funds move from Escrow to Available Balance in real-time.
+1. **Doctor submits claim**
+2. **AI clinical audit runs**
+3. **Policy check runs**
+4. Outcome becomes one of:
+   - **Auto Approved**
+   - **Manual Review Required**
+   - **Auto Rejected**
+   - **Patient Responsible / Self-Pay**
+5. **Wallet / POS / HMO ledger** update accordingly
+6. **Claim history is retained** for HMO and CFO inspection
+
+---
 
 ## 👥 The Builders
 
-We built this platform from the ground up during this hackathon, iterating through complex logic flows, database structures, cloud deployments, and AI prompt engineering to ensure it wasn't just a UI mockup, but a truly functional enterprise MVP.
+We built this platform from the ground up during the hackathon, then continued refining the underlying business logic, risk scoring, settlement rules, UI behavior, and historical auditability so that it behaves more like a true enterprise workflow than a demo mockup.
 
 * **Dr. Isaac Akinsika | Developer & Team Lead**
-  * *Role:* Architected the decoupled FastAPI backend, integrated the Gemini and Interswitch APIs, built the 2-Tier offline fallback redundancy, deployed the Docker infrastructure, and developed the Next.js frontend interfaces. Brings deep clinical domain expertise, alongside extensive research in healthcare financing and the Nigerian health insurance landscape.
+  * *Role:* Architected the FastAPI backend, integrated Gemini, PubMedBERT fallback logic, Interswitch payment flow, settlement state machine, and multi-portal frontend system. Led the evolution from simple AI scoring into a clinically aware, policy-aware, self-pay-aware adjudication engine.
   * *Contact:* wiz0isaac@gmail.com
 * **Anezi Ekemdi | Project Manager & Researcher**
-  * *Role:* Conducted deep research into Nigerian HMO bottlenecks, designed the product logic and Dynamic SLA flow, managed project execution, and ensured the MVP directly solved the hackathon's core challenges.
+  * *Role:* Conducted research into Nigerian HMO bottlenecks, product logic, care-flow friction, and business design. Helped shape the settlement logic, workflow requirements, and practical usability of the platform across hospital stakeholders.
   * *Contact:* ekemdianezi@gmail.com
 
 ---
