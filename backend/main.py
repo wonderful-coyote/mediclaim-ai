@@ -1443,6 +1443,22 @@ async def save_to_ledger(entry: LedgerEntry):
     return {"status": "success", "normalized_status": entry.status, "settlement_status": entry.settlement_status}
 
 
+@app.get("/api/v1/debug/reset-db")
+async def reset_database():
+    """Wipes the database clean and re-initializes it for a fresh demo."""
+    try:
+        # 1. Close any existing connections by deleting the file
+        if os.path.exists('mediclaim_enterprise.db'):
+            os.remove('mediclaim_enterprise.db')
+        
+        # 2. Re-run your init function to build fresh tables and wallets
+        init_db()
+        
+        return {"status": "success", "message": "Database wiped and completely reset! Ready for pitch."}
+    except Exception as e:
+        return {"status": "error", "message": f"Failed to reset: {str(e)}"}
+
+
 @app.get("/api/v1/patient/{patient_id}")
 async def get_patient_data(patient_id: str):
     conn = sqlite3.connect('mediclaim_enterprise.db')
