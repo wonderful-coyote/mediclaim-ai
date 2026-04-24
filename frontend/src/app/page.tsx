@@ -1,8 +1,8 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
-// const API_BASE_URL = "http://127.0.0.1:8000";
+//const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 type DoctorRank = "HO" | "MO" | "JR" | "SR" | "Cons";
 type ClaimStatus = "PENDING" | "APPROVED" | "REJECTED" | "NEEDS_INFO" | "DISPATCHED";

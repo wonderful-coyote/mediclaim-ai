@@ -177,7 +177,13 @@ def init_db():
                 INSERT INTO wallet_transactions (patient_id, amount, txn_ref, type, description)
                 VALUES (?, ?, 'INITIAL_BAL', 'CREDIT', 'Opening Balance')
             ''', (pid, pdata["wallet_balance"]))
-            
+
+    # Ensure audit_ledger has the wallet request state column
+    cursor.execute("PRAGMA table_info(audit_ledger)")
+    existing_audit_cols = {row[1] for row in cursor.fetchall()}
+    if 'wallet_request_status' not in existing_audit_cols:
+        cursor.execute("ALTER TABLE audit_ledger ADD COLUMN wallet_request_status TEXT")
+
     conn.commit()
     conn.close()
     print("✅ Database Initialized with Transaction Ledger & MediClaim Insurance Patients.")
@@ -2009,3 +2015,93 @@ async def clear_pos_payment(claim_id: str):
     
     conn.close()
     return {"status": "ignored"}
+
+@app.post("/api/v1/patient/pay-claim/{claim_id}")
+@app.post("/api/v1/admin/deduct-wallet-payment/{claim_id}")
+async def deduct_wallet_payment(claim_id: str):
+    conn = sqlite3.connect('mediclaim_enterprise.db')
+    cursor = conn.cursor()
+    
+    # 1. Fetch claim info
+    cursor.execute("SELECT patient_id, total_cost, deducted_amount, hmo_payout, settlement_status, procedure_name FROM audit_ledger WHERE claim_id = ?", (claim_id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Claim not found")
+        
+    patient_id, total_cost, deducted_amount, hmo_payout, settlement_status, procedure_name = row
+    
+    # 2. Calculate outstanding balance
+    out_of_pocket_total = max(0.0, total_cost - hmo_payout)
+    outstanding_balance = max(0.0, out_of_pocket_total - deducted_amount)
+    
+    if outstanding_balance <= 0:
+        conn.close()
+        return {"status": "ignored", "message": "No outstanding balance."}
+
+    # 3. Check patient wallet balance
+    cursor.execute("SELECT wallet_balance FROM patients WHERE patient_id = ?", (patient_id,))
+    patient_row = cursor.fetchone()
+    if not patient_row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Patient not found")
+        
+    wallet_balance = float(patient_row[0])
+    
+    if wallet_balance < outstanding_balance:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Insufficient wallet balance.")
+
+    try:
+        # 4. Deduct from patient's virtual wallet
+        cursor.execute("UPDATE patients SET wallet_balance = wallet_balance - ? WHERE patient_id = ?", (outstanding_balance, patient_id))
+        
+        # 5. Log the transaction so it shows up in the Patient's "Recent Activity" feed
+        cursor.execute('''
+            INSERT INTO wallet_transactions (patient_id, amount, txn_ref, type, description)
+            VALUES (?, ?, ?, 'DEBIT', ?)
+        ''', (patient_id, outstanding_balance, claim_id, f"App Wallet Payment: {procedure_name}"))
+
+        # 6. Credit Hospital's Available Balance
+        cursor.execute("UPDATE hospital_wallet SET available_balance = available_balance + ? WHERE id = 'HW-001'", (outstanding_balance,))
+
+        # 7. Update Claim Status and Shift Escrow if necessary
+        new_status = settlement_status
+        if settlement_status == "HMO_APPROVED_PENDING_PT":
+            # HMO funds move from pending to available because patient cleared their portion
+            cursor.execute("UPDATE hospital_wallet SET pending_escrow = pending_escrow - ?, available_balance = available_balance + ? WHERE id = 'HW-001'", (hmo_payout, hmo_payout))
+            new_status = "FULLY_SETTLED"
+        elif settlement_status == "PATIENT_RESPONSIBLE_PENDING_PT" or float(hmo_payout or 0) <= 0:
+            new_status = "PATIENT_RESPONSIBLE_PAID"
+
+        # Update the master ledger
+        cursor.execute("UPDATE audit_ledger SET deducted_amount = ?, settlement_status = ? WHERE claim_id = ?", (out_of_pocket_total, new_status, claim_id))
+        
+        conn.commit()
+        return {"status": "success", "message": "Wallet deducted successfully."}
+        
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.post("/api/v1/admin/request-wallet-deduction/{claim_id}")
+async def request_wallet_deduction(claim_id: str):
+    conn = sqlite3.connect('mediclaim_enterprise.db')
+    cursor = conn.cursor()
+    # Change state to REQUESTED
+    cursor.execute("UPDATE audit_ledger SET wallet_request_status = 'REQUESTED' WHERE claim_id = ?", (claim_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "message": "Request sent to patient."}
+
+@app.post("/api/v1/patient/decline-wallet-deduction/{claim_id}")
+async def decline_wallet_deduction(claim_id: str):
+    conn = sqlite3.connect('mediclaim_enterprise.db')
+    cursor = conn.cursor()
+    # Change state to DECLINED
+    cursor.execute("UPDATE audit_ledger SET wallet_request_status = 'DECLINED' WHERE claim_id = ?", (claim_id,))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "message": "Request declined."}
