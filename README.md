@@ -236,8 +236,15 @@ All demo accounts currently use the password **`123`**.
 1. Open the Patient Portal.
 2. Login as a patient and view wallet balance and claims.
 3. Fund the wallet through the Interswitch flow.
-4. If a claim still has an unpaid balance, use the POS paycode.
-5. Confirm that the CFO dashboard can see and clear the payment state.
+4. Use the following **Interswitch test card** for wallet funding:
+   - **Card Type:** Verve
+   - **Card Number:** `5061830100001895`
+   - **Expiry Date:** `01/40`
+   - **CVV:** `111`
+   - **PIN:** `1111`
+   - **OTP:** `123456`
+5. If a claim still has an unpaid balance, use the POS paycode.
+6. Confirm that the CFO dashboard can see and clear the payment state.
 
 ### Test 6: Historical Review Audit Trail
 1. Process a claim through HMO review or settlement.
