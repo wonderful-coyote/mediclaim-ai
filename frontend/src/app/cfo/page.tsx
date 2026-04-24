@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-//const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
+//const API_BASE_URL = "http://127.0.0.1:8000";
 
 type FilterType = "ALL" | "HMO" | "SELF_PAY" | "POS" | "REJECTED";
 

@@ -1,8 +1,8 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
 
-//const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://wonderfulcoyote-mediclaim-ai.hf.space";
+//const API_BASE_URL = "http://127.0.0.1:8000";
 
 declare global {
   interface Window {
@@ -307,7 +307,6 @@ export default function PatientPortal() {
   const handlePayFromWallet = async (claimId: string) => {
     setProcessingId(`pay-${claimId}`);
     
-    // Clear any previous errors for this claim
     setPaymentError((prev) => {
       const next = { ...prev };
       delete next[claimId];
@@ -319,7 +318,6 @@ export default function PatientPortal() {
         method: 'POST' 
       });
       
-      // If the backend returns a 400 (Insufficient Funds)
       if (!res.ok) {
         const errorData = await res.json();
         
@@ -330,13 +328,13 @@ export default function PatientPortal() {
           [claimId]: errorData.detail || "Payment failed. Please check your balance." 
         }));
         setProcessingId(null); 
-        return; // Stop execution here
+        return;
       }
       
       // On success, keep the loading state for 2 seconds for a smooth UI transition
       setTimeout(() => setProcessingId(null), 2000);
       
-    } catch (err: unknown) { // <-- FIXED: Changed from 'any' to 'unknown' to satisfy ESLint
+    } catch (err: unknown) {
       console.error("Payment error:", err);
       
       // Safely extract the error message for TypeScript
